@@ -7,14 +7,18 @@
             DB::connect();
             $area = ['A', 'B', 'D', 'E', 'F'];
             $list = ['1', '2', '3', '5'];
+            $index = 0;
             foreach ($area as $key => $value) {
                 for ($_floor = 2; $_floor <= 15; $_floor++) { 
                     foreach ($list as $key2 => $value2) {
-                        $id = $value . $value2 . '-' . $_floor;
-                        $name = $value . '棟' . $_floor . '樓之' . $value2;
-                        $sql = "INSERT INTO `units` (`UnitID`, `UnitName`) VALUES (?, ?)";
+                        $building = $value;
+                        $floor = $_floor;
+                        $room = $value2;
+                        $id = $building . $room . '-' . $floor;
+                        $sql = "INSERT INTO `units` (`Index_`, `UnitID`, `Building`, `Room`, `Floor`) VALUES (?, ?, ?, ?, ?)";
                         
-                        DB::insert($sql, array($id, $name));
+                        DB::insert($sql, array($index, $id, $building, $room, $floor));
+                        $index += 1;
                     }
                 }
             }

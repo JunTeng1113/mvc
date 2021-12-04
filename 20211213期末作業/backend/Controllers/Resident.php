@@ -4,9 +4,9 @@
     class Resident extends Controller {
         public function getResidents() {
             DB::connect();
-            if (isset($_POST['ResID'])) {
-                $id = $_POST['ResID'];
-                $sql = "SELECT * FROM `residents` WHERE `ResID`=?";
+            if (isset($_POST['UnitID'])) {
+                $id = $_POST['UnitID'];
+                $sql = "SELECT * FROM `residents` WHERE `UnitID`=?";
                 $arg = array($id);
 
             } else {

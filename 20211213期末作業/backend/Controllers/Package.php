@@ -6,26 +6,43 @@
             DB::connect();
             if (isset($_POST['PackageID'])) {
                 $id = $_POST['PackageID'];
-                $sql = "SELECT * FROM `packages` WHERE `PackageID`=?";
+                $sql = "SELECT * 
+                        FROM `packages` LEFT JOIN `units` ON `packages`.`UnitID` = `units`.`UnitID`
+                        WHERE `PackageID`=?
+                        ORDER BY `packages`.`ArriveTime` DESC";
                 $arg = array($id);
 
+            } elseif (isset($_POST['FilterValue'])) {
+                $filterValue = $_POST['FilterValue'];
+                $sql = "SELECT * 
+                        FROM `packages` LEFT JOIN `units` ON `packages`.`UnitID` = `units`.`UnitID`
+                        WHERE `packages`.`RecipientName` LIKE '%" . $filterValue . "%' OR `packages`.`UnitID` LIKE '%" . $filterValue . "%'
+                        ORDER BY `packages`.`ArriveTime` DESC";
+                $arg = NULL;
+            
             } else {
-                $sql = "SELECT * FROM `packages`";
+                $sql = "SELECT * 
+                        FROM `packages` LEFT JOIN `units` ON `packages`.`UnitID` = `units`.`UnitID`
+                        WHERE 1
+                        ORDER BY `packages`.`ArriveTime` DESC";
                 $arg = NULL;
             }
+            
             return DB::select($sql, $arg);
         }
 
+
         public function newPackage() {
-            $id = $_POST['RecipientID'];
+            $id = $_POST['UnitID'];
+            $name = $_POST['RecipientName'];
             $content = $_POST['Content'];
             $note = $_POST['Note'];
             //$confirmTime 取件時間
             //$arriveTime 代收時間
         
             DB::connect();
-            $sql = "INSERT INTO `packages` (`RecipientID`, `Content`, `Note`) VALUES (?, ?, ?)";
-            return DB::insert($sql, array($id, $content, $note));
+            $sql = "INSERT INTO `packages` (`UnitID`, `RecipientName`, `Content`, `Note`) VALUES (?, ?, ?, ?)";
+            return DB::insert($sql, array($id, $name, $content, $note));
         }
 
         public function removePackage() {

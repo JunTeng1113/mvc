@@ -6,11 +6,39 @@
             DB::connect();
             if (isset($_POST['UnitID'])) {
                 $id = $_POST['UnitID'];
-                $sql = "SELECT * FROM `units` WHERE `UnitID`=?";
+                $sql = "SELECT units.UnitID, ifnull(t1.ResNumber, 0) AS ResNumber
+                        FROM units
+                            LEFT JOIN 
+                                (SELECT residents.UnitID AS UnitID,
+                                    COUNT(residents.ResID) AS ResNumber
+                                FROM residents
+                                GROUP BY residents.UnitID) AS t1 ON units.UnitID = t1.UnitID
+                                WHERE `UnitID`=?";
                 $arg = array($id);
 
+            } elseif (isset($_POST['FilterValue']) && $_POST['FilterValue'] != '') {
+                $filterValue = $_POST['FilterValue'];
+
+                $sql = "SELECT units.UnitID, ifnull(t1.ResNumber, 0) AS ResNumber
+                        FROM units
+                            JOIN 
+                                (SELECT residents.UnitID AS UnitID,
+                                    COUNT(residents.ResID) AS ResNumber
+                                FROM residents
+                                WHERE residents.ResName LIKE '%" . $filterValue . "%'
+                                    OR residents.UnitID LIKE '%" . $filterValue . "%'
+                                GROUP BY residents.UnitID) AS t1 ON units.UnitID = t1.UnitID";
+                $arg = NULL;
+            
             } else {
-                $sql = "SELECT * FROM `units`";
+                $sql = "SELECT units.UnitID, ifnull(t1.ResNumber, 0) AS ResNumber
+                        FROM units
+                            LEFT JOIN 
+                                (SELECT residents.UnitID AS UnitID,
+                                    COUNT(residents.ResID) AS ResNumber
+                                FROM residents
+                                GROUP BY residents.UnitID) AS t1 ON units.UnitID = t1.UnitID
+                        ORDER BY `Index_` ASC";
                 $arg = NULL;
             }
             return DB::select($sql, $arg);
