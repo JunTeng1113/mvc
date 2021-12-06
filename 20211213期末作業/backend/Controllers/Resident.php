@@ -27,20 +27,22 @@
         }
 
         public function removeResident() {
-            $id = $_POST['ResID'];
+            $id = $_POST['UnitID'];
+            $name = $_POST['ResName'];
             DB::connect();
-            $sql = "DELETE FROM `residents` WHERE ResID=?";
-            return DB::delete($sql, array($id));
+            $sql = "DELETE FROM `residents` WHERE UnitID = ? AND ResName = ?";
+            return DB::delete($sql, array($id, $name));
         }
 
+        //給戶別及姓名，修改手機號碼
         public function updateResident() {
-            $id = $_POST['ResID'];
+            $id = $_POST['UnitID'];
             $name = $_POST['ResName'];
             $phone = $_POST['Phone'];
         
             DB::connect();
-            $sql = "UPDATE `residents` SET `ResName`=?, `Phone`=? WHERE ResID=?";
-            return DB::update($sql, array($name, $id));
+            $sql = "UPDATE `residents` SET `Phone`=? WHERE ResID IN (SELECT ResID FROM residents WHERE UnitID=? AND ResName=?)";
+            return DB::update($sql, array($phone, $id, $name));
         }
     }
 ?>

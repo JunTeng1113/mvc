@@ -7,6 +7,9 @@ export default function showInsertPage() {
     str += `<button id="doinsert">新增</button>`;
     $('#content').html(str);
     $('#doinsert').click(function (e) { 
-        doinsert();
+        const resName = $(`#resName`).val();
+        const phone = $(`#resPhone`).val();
+        const unitID = $(`#resUnitId`).val();
+        doinsert(resName, phone, unitID);
     });
 }
