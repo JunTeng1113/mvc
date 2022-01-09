@@ -1,6 +1,12 @@
 <?php
-    require_once './Controller.php';
+    namespace vendor;
+    require_once __DIR__.'/Autoload.php';
+    use vendor\Controller;
+    use \PDO;
+    use \PDOException;
     class DB extends Controller {
+        
+
         public static $dbHost;
         public static $dbName;
         public static $dbUser;

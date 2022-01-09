@@ -1,0 +1,7 @@
+.label {
+    display: block;
+}
+
+.label:hover {
+    background-color: aliceblue;
+}

@@ -1,11 +1,13 @@
+import Request from '../request.js';
 import doUpdate from './doUpdate.js';
 
 export default function showUpdatePage(unitID, resName) {
     const data = {
         'UnitID': unitID,
-        'ResName': resName
+        'ResName': resName,
+        'action': 'getResidents'
     }
-    axios.post('../backend/index.php?action=getResidents', Qs.stringify(data))
+    Request().post('/public/index.php', Qs.stringify(data))
     .then(res => {
         let response = res['data'];
         switch (response['status']) {

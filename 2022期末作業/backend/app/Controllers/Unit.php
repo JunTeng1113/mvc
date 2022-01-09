@@ -1,6 +1,8 @@
 <?php
-    require_once './DB.php';
-    require_once './Controller.php'; //index.php的相對路徑
+    namespace app\Controllers;
+    require_once __DIR__.'/../../vendor/Autoload.php';
+    use vendor\Controller;
+    use vendor\DB;
     class Unit extends Controller {
         public function getUnits() {
             DB::connect();
@@ -29,7 +31,18 @@
                                     OR residents.UnitID LIKE '%" . $filterValue . "%'
                                 GROUP BY residents.UnitID) AS t1 ON units.UnitID = t1.UnitID";
                 $arg = NULL;
-            
+
+            // 以棟別與樓層查詢該棟該樓層所有的戶別
+            } elseif (isset($_POST['Building']) && isset($_POST['Floor'])) {
+                $building = $_POST['Building'];
+                $floor = $_POST['Floor'];
+
+                $sql = "SELECT units.UnitID AS unitid
+                        FROM units
+                        WHERE units.Building = ?
+                            AND units.Floor = ?";
+                $arg = array($building, $floor);
+
             } else {
                 $sql = "SELECT units.UnitID, ifnull(t1.ResNumber, 0) AS ResNumber
                         FROM units
@@ -41,6 +54,26 @@
                         ORDER BY units.Building, units.Floor, units.Room";
                 $arg = NULL;
             }
+            return DB::select($sql, $arg);
+        }
+
+        public function getBuildings() {
+            DB::connect();
+            $sql = "SELECT DISTINCT units.Building AS building
+                    FROM units";
+            $arg = NULL;
+            return DB::select($sql, $arg);
+        }
+        
+        public function getFloor() {
+            $building = $_POST['Building'];
+
+            DB::connect();
+            $sql = "SELECT DISTINCT units.Floor AS floor
+                    FROM `units` 
+                    WHERE units.Building = ?
+                    ORDER BY units.Floor";
+            $arg = array($building);
             return DB::select($sql, $arg);
         }
 

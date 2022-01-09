@@ -1,7 +1,9 @@
+import Request from "../request.js";
 import showUnitPage from "./showUnitPage.js";
 
 export default function doUpdate(data){
-    axios.post("../backend/index.php?action=updateResident", Qs.stringify(data))
+    data['action'] = 'updateResident';
+    Request().post('/public/index.php', Qs.stringify(data))
     .then(res => {
         const response = res['data'];
         switch (response['status']) {

@@ -1,13 +1,10 @@
+import Request from "../request.js";
 import packageInfo from "./package.js";
 
-export default function doInsert() {
-    let data = {
-        'UnitID': $(`#packId`).val(),
-        'RecipientName': $(`#packName`).val(),
-        'Content': $(`#packContent`).val(),
-        'Note': $(`#packNote`).val()
-    };
-    axios.post('../backend/index.php?action=newPackage', Qs.stringify(data))
+export default function doInsert(data) {
+    data['action'] = 'newPackage';
+    
+    Request().post('/public/index.php', Qs.stringify(data))
     .then(res => {
         packageInfo();
     })

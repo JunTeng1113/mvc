@@ -1,5 +1,7 @@
 <?php
     $router -> register('getUnits', 'Unit', 'getUnits');
+    $router -> register('getBuildings', 'Unit', 'getBuildings');
+    $router -> register('getFloor', 'Unit', 'getFloor');
     $router -> register('newUnit', 'Unit', 'newUnit');
     $router -> register('removeUnit', 'Unit', 'removeUnit');
     $router -> register('updateUnit', 'Unit', 'updateUnit');
@@ -9,7 +11,9 @@
     $router -> register('removeResident', 'Resident', 'removeResident');
     $router -> register('updateResident', 'Resident', 'updateResident');
     
+    $router -> register('getRecords', 'Package', 'getRecords');
     $router -> register('getPackages', 'Package', 'getPackages');
+    $router -> register('getAUTO_INCREMENT', 'Package', 'getAUTO_INCREMENT');
     $router -> register('newPackage', 'Package', 'newPackage');
     $router -> register('removePackage', 'Package', 'removePackage');
     $router -> register('updatePackage', 'Package', 'updatePackage');

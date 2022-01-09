@@ -1,6 +1,8 @@
 <?php
-    require_once './DB.php';
-    require_once './Controller.php'; //index.php的相對路徑
+    namespace app\Controllers;
+    require_once __DIR__.'/../../vendor/Autoload.php';
+    use vendor\Controller;
+    use vendor\DB;
     class RootUnit extends Controller {
 
         public function rootUnit() {

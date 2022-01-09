@@ -1,15 +1,24 @@
-import packageInfo from "./package/package.js";
-import residentInfo from "./resident/residentInfo.js";
-import startPage from "./startPage.js";
+import startPage from './startPage.js';
+import Request from './request.js';
+import loginPage from './loginPage.js';
 
 $(document).ready(function () {
-    $('#root').html(startPage());
-
-    $('#resident').click(function (e) { 
-        residentInfo();
-    });
-    
-    $('#package').click(function (e) { 
-        packageInfo();
-    });
+    if(window.localStorage){
+        Request().get("public/index.php")
+        .then(function(resp){
+            const response = resp['data'];
+            if(response['status'] == 200){
+                //儲存到 local storage
+                window.localStorage.setItem("jwtToken", response['token']);
+                startPage();
+            }
+            else{
+                loginPage();
+                console.log(response);
+            }
+        })
+        .catch(function(err){
+            console.log(err);
+        });
+    }
 });

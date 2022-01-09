@@ -1,12 +1,14 @@
+import Request from "../request.js";
 import doDelete from "./doDelete.js";
 import showInsertPage from "./showInsertPage.js";
 import showUpdatePage from "./showUpdatePage.js";
 
 export default function showUnitPage(unitId) {
     const data = {
-        'UnitID': unitId
+        'UnitID': unitId,
+        'action': 'getResidents'
     }
-    axios.post('../backend/index.php?action=getResidents', Qs.stringify(data))
+    Request().post('/public/index.php', Qs.stringify(data))
     .then(res => {
         let response = res['data'];
         switch (response['status']) {

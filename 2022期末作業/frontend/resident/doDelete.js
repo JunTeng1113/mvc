@@ -1,12 +1,14 @@
 
+import Request from "../request.js";
 import showUnitPage from "./showUnitPage.js";
 
 export default function doDelete(unitID, resName) {
     let data = {
         'UnitID': unitID,
-        'ResName': resName
+        'ResName': resName,
+        'action': 'removeResident'
     };
-    axios.post('../backend/index.php?action=removeResident', Qs.stringify(data))
+    Request().post('/public/index.php', Qs.stringify(data))
     .then(res => {
         showUnitPage(unitID);
         //刪除成功
