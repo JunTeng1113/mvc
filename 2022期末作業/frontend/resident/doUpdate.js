@@ -6,6 +6,7 @@ export default function doUpdate(data){
     Request().post('/public/index.php', Qs.stringify(data))
     .then(res => {
         const response = res['data'];
+        console.log(response);
         switch (response['status']) {
             case 200:
                 console.log('更新成功');

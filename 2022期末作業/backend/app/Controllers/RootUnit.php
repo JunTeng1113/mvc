@@ -6,7 +6,6 @@
     class RootUnit extends Controller {
 
         public function rootUnit() {
-            DB::connect();
             $area = ['A', 'B', 'D', 'E', 'F'];
             $list = ['1', '2', '3', '5'];
             $index = 0;

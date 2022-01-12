@@ -24,6 +24,7 @@
         }
         
         static function select($sql, $args) {
+            self::connect();
             if (self::$conn == NULL) return self::response(14, "無法開啟DB");
             $stmt = self::$conn -> prepare($sql);
             $result = $stmt -> execute($args);
@@ -37,6 +38,7 @@
         }
 
         static function insert($sql, $args) {
+            self::connect();
             if (self::$conn == NULL) return self::response(14, "無法開啟DB");
             $stmt = self::$conn -> prepare($sql);
             $result = $stmt -> execute($args);
@@ -50,6 +52,7 @@
         }
 
         static function delete($sql, $args) {
+            self::connect();
             if (self::$conn == NULL) return self::response(14, "無法開啟DB");
             $stmt = self::$conn -> prepare($sql);
             $result = $stmt -> execute($args);
@@ -63,6 +66,7 @@
         }
 
         static function update($sql, $args) {
+            self::connect();
             if (self::$conn == NULL) return self::response(14, "無法開啟DB");
             $stmt = self::$conn -> prepare($sql);
             $result = $stmt -> execute($args);

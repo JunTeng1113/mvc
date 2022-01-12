@@ -10,6 +10,8 @@ export default function doDelete(unitID, resName) {
     };
     Request().post('/public/index.php', Qs.stringify(data))
     .then(res => {
+        const response = res['data'];
+        console.log(response);
         showUnitPage(unitID);
         //刪除成功
     })

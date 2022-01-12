@@ -10,6 +10,8 @@ export default function doInsert(resName, phone, unitID) {
     };
     Request().post('/public/index.php', Qs.stringify(data))
     .then(res => {
+        const response = res['data'];
+        console.log(response);
         residentInfo();
         //新增成功
     })

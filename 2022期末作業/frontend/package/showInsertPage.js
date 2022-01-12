@@ -102,13 +102,12 @@ function getResidents(unitID) {
         'UnitID': unitID,
         "action": "getResidents"
     };
-    
     Request().post('/public/index.php', Qs.stringify(data))
     .then(res => {
         let response = res['data'];
+        console.log(response);
         switch (response['status']) {
             case 200:
-                const response = res['data'];
                 const rows = response['result'];
                 let list = ``;
                 list += ` <option value="">請選擇收件人</option>`;
@@ -136,6 +135,7 @@ function setPackageID() {
     Request().post('/public/index.php', Qs.stringify(data))
     .then(res => {
         const response = res['data'];
+        console.log(response);
         const ai = response['result'][0]['ai'];
         $(`#id`).val(ai);
     })
@@ -151,6 +151,7 @@ function setBuildings() {
     Request().post("/public/index.php", Qs.stringify(data))
     .then(res => {
         const response = res['data'];
+        console.log(response);
         const rows = response['result'];
         let list = ``;
         $(rows).each(function (index, element) {
@@ -183,6 +184,7 @@ function setFloor(building) {
     Request().post("/public/index.php", Qs.stringify(data))
     .then(res => {
         const response = res['data'];
+        console.log(response);
         const rows = response['result'];
         let list = ``;
         $(rows).each(function (index, element) {
@@ -217,6 +219,7 @@ function setUnits(building, floor) {
     Request().post("/public/index.php", Qs.stringify(data))
     .then(res => {
         const response = res['data'];
+        console.log(response);
         const rows = response['result'];
         let list = ``;
         $(rows).each(function (index, element) {

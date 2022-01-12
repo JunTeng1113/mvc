@@ -2,14 +2,16 @@ import Request from '../request.js';
 import doUpdate from './doUpdate.js';
 
 export default function showUpdatePage(unitID, resName) {
+    console.log('進入更新頁面');
     const data = {
         'UnitID': unitID,
         'ResName': resName,
-        'action': 'getResidents'
+        'action': 'getResident'
     }
     Request().post('/public/index.php', Qs.stringify(data))
     .then(res => {
         let response = res['data'];
+        console.log(response);
         switch (response['status']) {
             case 200:
                 const result = response['result'][0];

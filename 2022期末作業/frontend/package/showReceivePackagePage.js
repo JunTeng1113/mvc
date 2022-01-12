@@ -4,13 +4,13 @@ import doinsert from './doInsert.js';
 import selectPackage from './selectPackage.js';
 
 export default function showReceivePackagePage() {
-    let str = ``;
-    str += `查詢包裹：<button id="unitID" data-toggle="modal" data-target="#unitModal">選擇戶別</button>`;
-    str += `<button id='confirm'>確認領取</button>`;
-    str += `<div id='table'></div>`;
+    let content = ``;
+    content += `查詢包裹：<button id="unitID" data-toggle="modal" data-target="#unitModal">選擇戶別</button>`;
+    content += `<button id='confirm'>確認領取</button>`;
+    content += `<div class='table' id='table'></div>`;
     
     const modal_body = `
-    <table border="1" class="table">
+    <table border="1" class="table table-bordered">
         <tr>
             <th>棟別</th>
             <th>樓層</th>
@@ -24,7 +24,7 @@ export default function showReceivePackagePage() {
     </table>`;
 
     content += modal(`unitModal`, `選擇住戶`, modal_body);
-    $(`#content`).html(str);
+    $(`#content`).html(content);
 
     setBuildings();
     $(`#confirmModal`).click(function (e) { 
@@ -47,6 +47,8 @@ export default function showReceivePackagePage() {
             }
             Request().post('/public/index.php', Qs.stringify(data))
             .then(res => {
+                const response = res['data'];
+                console.log(response);
                 const search = $(`#unitID`).val();
                 selectPackage(search);
             })
@@ -71,6 +73,7 @@ function setBuildings() {
     Request().post("/public/index.php", Qs.stringify(data))
     .then(res => {
         const response = res['data'];
+        console.log(response);
         const rows = response['result'];
         let list = ``;
         $(rows).each(function (index, element) {
@@ -103,6 +106,7 @@ function setFloor(building) {
     Request().post("/public/index.php", Qs.stringify(data))
     .then(res => {
         const response = res['data'];
+        console.log(response);
         const rows = response['result'];
         let list = ``;
         $(rows).each(function (index, element) {
@@ -137,6 +141,7 @@ function setUnits(building, floor) {
     Request().post("/public/index.php", Qs.stringify(data))
     .then(res => {
         const response = res['data'];
+        console.log(response);
         const rows = response['result'];
         let list = ``;
         $(rows).each(function (index, element) {

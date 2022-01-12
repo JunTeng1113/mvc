@@ -4,16 +4,36 @@
     use \Exception;
     use vendor\JWT\JWT;
     use vendor\JWT\Key;
-    use app\Controllers\Login;
-
+    use vendor\DB;
+    use app\Models\User;
     class AuthMiddleware {
+        public static function getUserID() {
+            $headers = getallheaders();
+            $jwt = $headers['Authorization'];
+            $secret_key = "hello";
+            $payload = JWT::decode($jwt, $secret_key, array("HS256"));
+            $userID = $payload -> data -> UserID;
+            return $userID;
+        }
         public static function checkToken() {
             $headers = getallheaders();
             $jwt = $headers['Authorization'];
             $secret_key = "hello";
             try {
                 $payload = JWT::decode($jwt, $secret_key, array("HS256"));
-                $jwt = self::genToken($payload -> data -> id);
+                
+                $response['permission'] = true;
+                if (isset($_POST['action'])) {
+                    $userID = $payload -> data -> UserID;
+                    $action = $_POST['action'];
+                    
+                    $res = User::hasPermission($userID, $action);
+                    $result = $res['result'];
+                    $response['action'] = $action;
+                    $response['permission'] = count($result) > 0 ? true : false;
+                }
+
+                $jwt = self::genToken($payload -> data -> id, $payload -> data -> UserID);
                 $response['status'] = 200;
                 $response['message'] = "Access granted";
                 $response['token'] = $jwt;
@@ -23,18 +43,20 @@
             }
             return $response;
         }
+        
         public static function doLogin() {
             $id = $_POST['id'];
             $password = $_POST['password'];
-            //驗證登入
             
-            $jwt = self::genToken($id);
-            $response['status'] = 200;
-            $response['message'] = "Access granted";
+            $response = User::doLogin($id, $password);
+            $result = $response['result'];
+            $userID = $result[0]['UserID'];
+
+            $jwt = self::genToken($id, $userID);
             $response['token'] = $jwt;
             return $response;
         }
-        public static function genToken($id) {
+        public static function genToken($id, $userID) {
             $secret_key = "hello";
             $issuer_claim = "http://localhost";
             $audience_claim = "http://localhost";
@@ -46,7 +68,8 @@
                 "iat" => $issuedat_claim,
                 "exp" => $expire_claim, 
                 "data" => array(
-                    "id" => $id
+                    "id" => $id, 
+                    "UserID" => $userID
                 )
             );
             $jwt = JWT::encode($payload, $secret_key);

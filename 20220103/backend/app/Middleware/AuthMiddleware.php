@@ -27,7 +27,6 @@
             $id = $_POST['id'];
             $password = $_POST['password'];
             $res = Login::Login($id, $password);
-            echo $res;
             $jwt = self::genToken($id);
             $response['status'] = 200;
             $response['message'] = "Access granted";

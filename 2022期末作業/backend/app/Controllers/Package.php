@@ -3,18 +3,25 @@
     require_once __DIR__.'/../../vendor/Autoload.php';
     use vendor\Controller;
     use vendor\DB;
+    use app\Models\Package as PackageModel;
+    use app\Middleware\AuthMiddleware;
     class Package extends Controller {
+
+        private $pm;
+        public function __construct() {
+            $this -> pm = new PackageModel();
+        }
         public function getRecords() {
-            DB::connect();
-            $sql = "SELECT * 
-                    FROM `packages` LEFT JOIN `units` ON `packages`.`UnitID` = `units`.`UnitID`
-                    WHERE `packages`.`ConfirmTime` IS NOT NULL
-                    ORDER BY `packages`.`ConfirmTime` DESC";
-            $arg = NULL;
-            return DB::select($sql, $arg);
+            $response = AuthMiddleware::checkToken();
+            if ($response['permission'] == true) {
+                return $this -> pm -> getRecords();
+            } else {
+                $response['status'] = 403;
+                $response['message'] = 'Access denied';
+                return $response;
+            }
         }
         public function getpackages() {
-            DB::connect();
             if (isset($_POST['PackageID'])) {
                 $id = $_POST['PackageID'];
                 $sql = "SELECT * 
@@ -41,18 +48,21 @@
             
             return DB::select($sql, $arg);
         }
-        
+        public function getUnitPackages() {
+            $response = AuthMiddleware::checkToken();
+            if ($response['permission'] == true) {
+                $unitID = $_POST['UnitID'];
+                $status = isset($_POST['status']) ?  $_POST['status'] : 'all';
+                return $this -> pm -> getUnitPackages($unitID, $status);
+            } else {
+                $response['status'] = 403;
+                $response['message'] = 'Access denied';
+                return $response;
+            }
+        }
 
         public function getAUTO_INCREMENT() {
-            DB::connect();
-            $sql = "SELECT AUTO_INCREMENT AS ai
-                    FROM INFORMATION_SCHEMA.TABLES
-                    WHERE TABLE_NAME = 'packages'
-                    ORDER BY ai DESC
-                    LIMIT 0, 1";
-            $arg = NULL;
-            
-            return DB::select($sql, $arg);
+            return $this -> pm -> getAUTO_INCREMENT();
         }
 
         public function newPackage() {
@@ -60,45 +70,29 @@
             $name = $_POST['RecipientName'];
             $type = $_POST['Type'];
             $note = $_POST['Note'];
-            //$confirmTime 取件時間
-            //$arriveTime 代收時間
-        
-            DB::connect();
-            $sql = "INSERT INTO `packages` (`UnitID`, `RecipientName`, `Type`, `Note`) VALUES (?, ?, ?, ?)";
-            return DB::insert($sql, array($id, $name, $type, $note));
+            return $this -> pm -> newPackage($id, $name, $type, $note);
         }
 
         public function removePackage() {
             $id = $_POST['PackageID'];
-            DB::connect();
-            $sql = "DELETE FROM `packages` WHERE PackageID=?";
-            return DB::delete($sql, array($id));
+            return $this -> pm -> removePackage($id);
         }
 
         public function updatePackage() {
             $id = $_POST['PackageID'];
             $type = $_POST['Type'];
             $note = $_POST['Note'];
-        
-            DB::connect();
-            $sql = "UPDATE `packages` SET `Type`=?, `Note`=? WHERE PackageID=?";
-            return DB::update($sql, array($type, $note, $id));
+            return $this -> pm -> updatePackage($id, $type, $note);
         }
 
         public function confirmPackage() {
             $id = $_POST['PackageID'];
-        
-            DB::connect();
-            $sql = "UPDATE `packages` SET `ConfirmTime`=NOW() WHERE PackageID=?";
-            return DB::update($sql, array($id));
+            return $this -> pm -> confirmPackage($id);
         }
         
         public function unconfirmPackage() {
             $id = $_POST['PackageID'];
-        
-            DB::connect();
-            $sql = "UPDATE `packages` SET `ConfirmTime`='' WHERE PackageID=?";
-            return DB::update($sql, array($id));
+            return $this -> pm -> unconfirmPackage($id);
         }
     }
 ?>

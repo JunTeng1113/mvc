@@ -5,3 +5,6 @@
 .label:hover {
     background-color: aliceblue;
 }
+::-webkit-scrollbar {
+    display: none;
+    }

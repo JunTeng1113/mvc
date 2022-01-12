@@ -1,33 +1,23 @@
+import { delay } from "../assets/function.js";
 import { modal } from "../modal.js";
+import Request from "../request.js";
 
 export default function announcementPage() {
     let header = ``;
+    header += `<button class="btn btn-primary btn-sm mx-1" id="addAnnouncement" data-toggle="modal" data-target="#announcementModal">新增公告</button>`;
     let content = ``;
-    content += `<div class='container'>`;
-    content += `<button class="btn btn-primary btn-sm" id="addAnnouncement" data-toggle="modal" data-target="#announcementModal">新增公告</button>`;
     content += `
-    <table id='announcementTable'>
+    <table id='announcementTable' class='table small table-striped table-bordered text-center'>
         <thead>
-            <tr>
-                <th>#</th>
-                <th>公告標題</th>
-                <th>公告類型</th>
-                <th>公告起日</th>
-                <th>公告迄日</th>
-                <th>狀態</th>
-                <th>人氣</th>
-                <th>置頂</th>
-                <th>建立時間</th>
-                <th>操作</th>
-            </tr>
         </thead>
         <tbody>
         </tbody>
     </table>`;
-    content += `</div>`;
 
     const modal_body = `
     <div class='card'>
+        <input type="hidden" name='action'>
+        <input type="hidden" name='annID'>
         <div class='row'>
             <label for="" class='col-sm-3 text-end'>公告標題</label><input type="text" name='title' class='col-sm-6' placeholder='請輸入公告標題'>
         </div>
@@ -55,11 +45,11 @@ export default function announcementPage() {
         </div>
         <div class='row'>
             <label for="" class='col-sm-3 text-end'>是否置頂</label>
-            <label for="s1" class='col-sm-6'><input type="checkbox" name="top" id="s1" value="1">是</label>
+            <label for="s1" class='col-sm-6'><input type="checkbox" name="top" id="s1">是</label>
         </div>
         <div class='row'>
             <label for="" class='col-sm-3 text-end'>是否刊登</label>
-            <label for="s2" class='col-sm-6'><input type="checkbox" name="publish" id="s2" value="1">是</label>
+            <label for="s2" class='col-sm-6'><input type="checkbox" name="publish" id="s2">是</label>
         </div>
         <div class='row'>
             <label for="" class='col-sm-3 text-end'>內容</label>
@@ -67,11 +57,35 @@ export default function announcementPage() {
         </div>
     </div>`;
 
-    content += modal(`announcementModal`, `新增公告`, modal_body);
-    $(`#headerBar`).html(header);
+    content += modal(`announcementModal`, `編輯公告`, modal_body);
+    $(`#header`).html(header);
     $('#content').html(content);
-
-    $(`#announcementTable`).DataTable({
+    
+    let dt = $(`#announcementTable`).DataTable({
+        "dom": `<'row'<'col-sm-12'tr>>
+                <"row"<"col-sm-4"><"col-sm-4 text-center"p><"col-sm-4">>`,
+        "searching": false, //搜尋功能, 預設是開啟
+        "paging": true, //分頁功能, 預設是開啟
+        "lengthMenu": [10],
+        "bLengthChange": false,
+        "info": false,
+        "ordering": false, 
+        "columnDefs": [{
+            "defaultContent": "-",
+            "targets": "_all"
+        }],
+        "columns": [
+            { "name": "AnnID", "title": "#"},
+            { "name": "Title", "title": "公告標題", "width": "25%"},
+            { "name": "Type", "title": "公告類型"},
+            { "name": "StartDate", "title": "公告起日"},
+            { "name": "EndDate", "title": "公告迄日"},
+            { "name": "Publish", "title": "狀態"},
+            { "name": "Clicks", "title": "人氣"},
+            { "name": "Top", "title": "置頂"},
+            { "name": "ReleaseTime", "title": "發佈時間"},
+            { "name": "Action", "title": "操作", "width": "10%"}
+        ], 
         "language": {
             "processing": "處理中...",
             "loadingRecords": "載入中...",
@@ -92,21 +106,169 @@ export default function announcementPage() {
                 "sortAscending": ": 升冪排列",
                 "sortDescending": ": 降冪排列"
             }
-    }});
-
+        }
+    });
+    setAnnouncements(dt);
+    
     $('#confirmModal').click(function (e) { 
         const data = {
+            'annID': $(`input[name=annID]`).val(),
             'title': $(`input[name=title]`).val(),
             'type': $(`select[name=type]`).val(),
             'startDate': $(`input[name=startDate]`).val(),
             'endDate': $(`input[name=endDate]`).val(),
-            'top': $(`input[name=top]`).val(),
-            'publish': $(`input[name=publish]`).val(),
+            'top': $(`input[name=top]`).is(`:checked`) ? 1 : 0,
+            'publish': $(`input[name=publish]`).is(`:checked`) ? 1 : 0,
             'content': $(`textarea[name=content]`).val()
         }
-        console.log(data);
+        console.log('更新公告');
+        if ($(`input[name=action]`).val() == 'update') {
+            updateAnnouncement(data); //更新公告
+        } else {
+            addAnnouncement(data);
+        }
+        setAnnouncements(dt);
     });
     
 
+}
+
+async function addAnnouncement(data) {
+    data['action'] = `addAnnouncement`;
+    return await Request().post('/public/index.php', Qs.stringify(data))
+    .then(res => {
+        const response = res['data'];
+        console.log(response);
+        switch (response) {
+            case 200:
+                return true;
+        
+            default:
+                return false;
+        }
+    })
+    .catch(err => {
+        console.error(err); 
+    })
+    
+}
+
+async function updateAnnouncement(data) {
+    data['action'] = `updateAnnouncement`;
+    return await Request().post('/public/index.php', Qs.stringify(data))
+    .then(res => {
+        const response = res['data'];
+        console.log(response);
+        switch (response) {
+            case 200:
+                return true;
+        
+            default:
+                return false;
+        }
+    })
+    .catch(err => {
+        console.error(err); 
+    })
+    
+}
+
+export async function getAnnouncements() {
+    const data = {
+        'action': 'getAnnouncements'
+    }
+    try {
+        const res = await Request().post('/public/index.php', Qs.stringify(data))
+        const response = res['data'];
+        console.log(response);
+        const result = response['result'];
+        return result;
+    } catch (error) {
+        console.error(err); 
+    }
+}
+
+export async function setAnnouncements(table) {
+    table.clear().draw();
+    await delay(0.05);
+    const result = await getAnnouncements();
+    result.forEach(row => {
+        // {
+        //     "AnnID":       row['AnnID'],
+        //     "Title":       row['Title'],
+        //     "Type":       row['Type'],
+        //     "StartDate":       row['StartDate'],
+        //     "EndDate":       row['EndDate'],
+        //     "Publish":       row['Publish'],
+        //     "Clicks":       row['Clicks'],
+        //     "Top":       row['Top'],
+        //     "ReleaseTime":       row['ReleaseTime'],
+        //     "Action":       '123'
+        // }
+        const action = `
+        <button name="edit" value="${row['AnnID']}" data-toggle="modal" data-target="#announcementModal">
+            <i class="fas fa-edit"></i>
+        </button>
+        <button name="delete" value="${row['AnnID']}">
+            <i class="fas fa-trash-alt"></i>
+        </button>`;
+        table.row.add([row['AnnID'], 
+            row['Title'], 
+            row['Type'], 
+            row['StartDate'], 
+            row['EndDate'], 
+            (parseInt(row['Publish'])==1 ? `<span class='text-success'>刊登中</span>` : `<span class='text-secondary'>未刊登</span>`), 
+            row['Clicks'], 
+            (parseInt(row['Top'])==1 ? '✓' : ''), 
+            row['ReleaseTime'], 
+            action]).draw();
+    });
+
+    $('button[name="edit"]').click(async function (e) { 
+        const data = {
+            'AnnID': $(this).val()
+            
+        }
+        const result = await getAnnouncement(data);
+        $(`input[name=annID]`).val($(this).val());
+        $(`input[name=action]`).val('update');
+        $(`input[name=title]`).val(result['Title']);
+        $(`select[name=type]`).val(result['Type']);
+        $(`input[name=startDate]`).val(result['StartDate']);
+        $(`input[name=endDate]`).val(result['EndDate']);
+        $(`input[name=top]`).prop('checked', parseInt(result['Top']) == 1 ? true : false);
+        $(`input[name=publish]`).prop('checked', parseInt(result['Publish']) == 1 ? true : false);
+        $(`textarea[name=content]`).val(result['Content']);
+
+    });
+    $('button[name="delete"]').click(function (e) { 
+        const data = {
+            'annID': $(this).val()
+        };
+        removeAnnouncement(data);
+        setAnnouncements(table);
+    });
+}
+
+async function removeAnnouncement(data) {
+    data['action'] = 'removeAnnouncement';
+    try {
+        const res = await Request().post('/public/index.php', Qs.stringify(data));
+    } catch (error) {
+        console.error(err); 
+    }
+}
+
+export async function getAnnouncement(data) {
+    data['action'] = 'getAnnouncement';
+    try {
+        const res = await Request().post('/public/index.php', Qs.stringify(data));
+        const response = res['data'];
+        console.log(response);
+        const result = response['result'][0];
+        return result;
+    } catch (error) {
+        console.error(error); 
+    }
 }
 

@@ -17,8 +17,11 @@ export default function loginPage() {
         .then(res => {
             let response = res['data'];
             console.log(response);
-            if (window.localStorage) {
-                window.localStorage.setItem("jwtToken", response['token']);
+            const result = response['result'];
+            if (result.length > 0) {
+                if (window.localStorage) {
+                    window.localStorage.setItem("jwtToken", response['token']);
+                }
             }
             window.location.reload();
 

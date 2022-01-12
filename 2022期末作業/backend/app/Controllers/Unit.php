@@ -3,9 +3,9 @@
     require_once __DIR__.'/../../vendor/Autoload.php';
     use vendor\Controller;
     use vendor\DB;
+    use app\Middleware\AuthMiddleware;
     class Unit extends Controller {
         public function getUnits() {
-            DB::connect();
             if (isset($_POST['UnitID'])) {
                 $id = $_POST['UnitID'];
                 $sql = "SELECT units.UnitID, ifnull(t1.ResNumber, 0) AS ResNumber
@@ -58,7 +58,6 @@
         }
 
         public function getBuildings() {
-            DB::connect();
             $sql = "SELECT DISTINCT units.Building AS building
                     FROM units";
             $arg = NULL;
@@ -68,7 +67,6 @@
         public function getFloor() {
             $building = $_POST['Building'];
 
-            DB::connect();
             $sql = "SELECT DISTINCT units.Floor AS floor
                     FROM `units` 
                     WHERE units.Building = ?
@@ -81,14 +79,12 @@
             $id = $_POST['UnitID'];
             $name = $_POST['UnitName'];
         
-            DB::connect();
             $sql = "INSERT INTO `units` (`UnitID`, `UnitName`) VALUES (?, ?)";
             return DB::insert($sql, array($id, $name));
         }
 
         public function removeUnit() {
             $id = $_POST['UnitID'];
-            DB::connect();
             $sql = "DELETE FROM `units` WHERE UnitID=?";
             return DB::delete($sql, array($id));
         }
@@ -97,7 +93,6 @@
             $id = $_POST['UnitID'];
             $name = $_POST['UnitName'];
         
-            DB::connect();
             $sql = "UPDATE `units` SET `UnitName`=? WHERE UnitID=?";
             return DB::update($sql, array($name, $id));
         }

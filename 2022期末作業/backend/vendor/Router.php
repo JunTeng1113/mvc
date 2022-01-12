@@ -1,7 +1,5 @@
 <?php
     namespace vendor;
-    require_once __DIR__ . "/Autoload.php";
-    use app\Controllers as app;
     class Router {
         private $routeTable;
         public function __construct() {
