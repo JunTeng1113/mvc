@@ -51,4 +51,10 @@ export default async function managePage() {
     $('#user').click(function (e) { 
         userPage();
     });
+    $(`#logout`).click(function (e) { 
+        if (window.localStorage) {
+            window.localStorage.setItem("jwtToken", '');
+        }
+        window.location.reload();
+    });
 }

@@ -11,6 +11,11 @@
         public function __construct() {
             $this -> user = new UserModel();
         }
+        public function doLogin() {
+            $id = $_POST['id'];
+            $password = $_POST['password'];
+            return $this -> user -> doLogin($id, $password);
+        }
 
         public function hasPermission() {
             $userID = AuthMiddleware::getUserID();
@@ -21,6 +26,14 @@
         public function getUserInfo() {
             $userID = AuthMiddleware::getUserID();
             return $this -> user -> getUserInfo($userID);
+        }
+        
+        public function registerUser() {
+            $unitID = $_POST['UnitID'];
+            $accountID = $_POST['AccountID'];
+            $password = $_POST['Password'];
+            $phone = $_POST['Phone'];
+            return $this -> user -> registerUser($unitID, $accountID, $password, $phone);
         }
     }
 ?>

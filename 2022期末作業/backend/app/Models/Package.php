@@ -17,7 +17,7 @@
                 case '0': // 查詢未領取的包裹
                     $sql = "SELECT * 
                             FROM packages
-                            WHERE packages.UnitID = '" . $unitID . "'
+                            WHERE packages.UnitID LIKE '" . $unitID . "'
                             AND packages.ConfirmTime IS NULL
                             ORDER BY packages.ArriveTime DESC";
                     $arg = array($unitID);
@@ -26,7 +26,7 @@
                 case '1': // 查詢已領取的包裹
                     $sql = "SELECT * 
                             FROM packages
-                            WHERE packages.UnitID = '" . $unitID . "'
+                            WHERE packages.UnitID LIKE '" . $unitID . "'
                             AND packages.ConfirmTime IS NOT NULL
                             ORDER BY packages.ArriveTime DESC";
                     $arg = array($unitID);
@@ -35,7 +35,7 @@
                 default: // 查詢所有的包裹
                     $sql = "SELECT * 
                             FROM packages
-                            WHERE packages.UnitID = '" . $unitID . "'
+                            WHERE packages.UnitID LIKE '" . $unitID . "'
                             ORDER BY packages.ArriveTime DESC";
                     $arg = array($unitID);
                     break;

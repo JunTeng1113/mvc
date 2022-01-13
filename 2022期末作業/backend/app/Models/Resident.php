@@ -23,6 +23,11 @@
             $arg = array($unitID, $ResName);
             return DB::select($sql, $arg);
         }
+        public function getResidentPhone($phone) {
+            $sql = "SELECT * FROM residents WHERE residents.Phone = ?";
+            $arg = array($phone);
+            return DB::select($sql, $arg);
+        }
 
         public function newResident($name, $phone, $id) {
             $sql = "INSERT INTO `residents` (`ResName`, `Phone`, `UnitID`) VALUES (?, ?, ?)";

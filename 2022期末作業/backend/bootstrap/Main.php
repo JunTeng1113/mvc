@@ -29,11 +29,11 @@
                 return;
             }
 
+            $router = new Router();
+            require_once __DIR__."/../routes/web.php";
             $response = $responseToken = AuthMiddleware::checkToken();
             if ($responseToken['status'] == 200) {
                 if ($action != "no_action") {
-                    $router = new Router();
-                    require_once __DIR__."/../routes/web.php";
                     $response = $router -> run($action);
                     $response['token'] = $responseToken['token'];
                 }
@@ -43,6 +43,20 @@
                         $response = AuthMiddleware::doLogin();
                         break;
                     
+                    case 'getResidentPhone':
+                        $response = $router -> run($action);
+                        break;
+
+                    
+                    case 'registerUser':
+                        $response = $router -> run($action);
+                        break;
+
+                    
+                    case 'addUserRole':
+                        $response = $router -> run($action);
+                        break;
+                        
                     default:
                         # code...
                         break;

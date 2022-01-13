@@ -53,7 +53,6 @@
         public function updateAnnouncement() {
             $response = AuthMiddleware::checkToken();
             if ($response['permission'] == true) {
-                $id = $_POST['AnnID'];
                 $AnnID = $_POST['annID'];
                 $Type = $_POST['type'];
                 $Title = $_POST['title'];

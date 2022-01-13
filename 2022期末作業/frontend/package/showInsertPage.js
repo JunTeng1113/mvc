@@ -100,7 +100,8 @@ export default function showInsertPage() {
 function getResidents(unitID) {
     const data = {
         'UnitID': unitID,
-        "action": "getResidents"
+        "action": "getResidents",
+        'status': '0'
     };
     Request().post('/public/index.php', Qs.stringify(data))
     .then(res => {

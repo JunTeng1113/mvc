@@ -26,9 +26,15 @@
         public function getUserInfo($userID) {
             $sql = "SELECT *
                     FROM user
-                    WHERE user.UserID = ?";
+                    WHERE user.UserID LIKE ?";
             $arg = array($userID);
             return DB::select($sql, $arg);
+        }
+
+        public function registerUser($UnitID, $accountID, $password, $phone) {
+            $sql = "INSERT INTO user( UnitID, AccountID, Password, Phone) VALUES (?, ?, ?, ?)";
+            $arg = array($UnitID, $accountID, $password, $phone);
+            return DB::insert($sql, $arg);
         }
     }
 ?>

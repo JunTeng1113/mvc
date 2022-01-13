@@ -1,6 +1,7 @@
+import { getUserInfo } from "../assets/function.js";
 import { getUnitPackages } from "../package/getPackage.js";
 
-function userPackagePage() {
+async function userPackagePage() {
     let header = ``;
     header += `<button class="btn btn-primary btn-sm mx-1" id='package1'>未領取</button>`;
     header += `<button class="btn btn-primary btn-sm mx-1" id='package2'>已領取</button>`;
@@ -8,12 +9,18 @@ function userPackagePage() {
     $('#header').html(header);
     $(`#content`).html('');
 
+    const response = await getUserInfo();
+    const result = response['result'];
+    let unitID = result[0]['UnitID'];
+    if (unitID == '') {
+        unitID = '%%';
+    }
     $(`#package1`).click(function (e) { 
-        showUnitPackages('B3-11', '0');
+        showUnitPackages(unitID, '0');
     });
 
     $(`#package2`).click(function (e) { 
-        showUnitPackages('B3-11', '1');
+        showUnitPackages(unitID, '1');
     });
 }
 export {userPackagePage}

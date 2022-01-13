@@ -3,8 +3,15 @@
     require_once __DIR__.'/../../vendor/Autoload.php';
     use vendor\Controller;
     use vendor\DB;
+    use app\Models\Unit as UnitModel;
     use app\Middleware\AuthMiddleware;
     class Unit extends Controller {
+
+        private $unit;
+        public function __construct() {
+            $this -> unit = new UnitModel();
+        }
+
         public function getUnits() {
             if (isset($_POST['UnitID'])) {
                 $id = $_POST['UnitID'];

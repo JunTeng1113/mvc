@@ -243,7 +243,7 @@ export async function setAnnouncements(table) {
     });
     $('button[name="delete"]').click(function (e) { 
         const data = {
-            'annID': $(this).val()
+            'AnnID': $(this).val()
         };
         removeAnnouncement(data);
         setAnnouncements(table);
@@ -254,6 +254,8 @@ async function removeAnnouncement(data) {
     data['action'] = 'removeAnnouncement';
     try {
         const res = await Request().post('/public/index.php', Qs.stringify(data));
+        const response = res['data'];
+        console.log(response);
     } catch (error) {
         console.error(err); 
     }

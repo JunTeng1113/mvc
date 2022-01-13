@@ -24,6 +24,11 @@
             return $this -> rm -> getResident($id, $name);
         }
 
+        public function getResidentPhone() {
+            $phone = $_POST['Phone'];
+            return $this -> rm -> getResidentPhone($phone);
+        }
+
         public function newResident() {
             $name = $_POST['ResName'];
             $phone = $_POST['Phone'];

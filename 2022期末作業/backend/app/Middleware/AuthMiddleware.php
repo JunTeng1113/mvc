@@ -5,7 +5,7 @@
     use vendor\JWT\JWT;
     use vendor\JWT\Key;
     use vendor\DB;
-    use app\Models\User;
+    use app\Controllers\User;
     class AuthMiddleware {
         public static function getUserID() {
             $headers = getallheaders();
@@ -24,10 +24,9 @@
                 
                 $response['permission'] = true;
                 if (isset($_POST['action'])) {
-                    $userID = $payload -> data -> UserID;
                     $action = $_POST['action'];
-                    
-                    $res = User::hasPermission($userID, $action);
+                    $user = new User();
+                    $res = $user -> hasPermission();
                     $result = $res['result'];
                     $response['action'] = $action;
                     $response['permission'] = count($result) > 0 ? true : false;
@@ -45,13 +44,11 @@
         }
         
         public static function doLogin() {
-            $id = $_POST['id'];
-            $password = $_POST['password'];
-            
-            $response = User::doLogin($id, $password);
+            $user = new User();
+            $response = $user -> doLogin();
             $result = $response['result'];
+            $id = $result[0]['AccountID'];
             $userID = $result[0]['UserID'];
-
             $jwt = self::genToken($id, $userID);
             $response['token'] = $jwt;
             return $response;

@@ -15,6 +15,7 @@
 
     $router -> register('getResidents', 'Resident', 'getResidents');
     $router -> register('getResident', 'Resident', 'getResident');
+    $router -> register('getResidentPhone', 'Resident', 'getResidentPhone');
     $router -> register('newResident', 'Resident', 'newResident');
     $router -> register('removeResident', 'Resident', 'removeResident');
     $router -> register('updateResident', 'Resident', 'updateResident');
@@ -32,4 +33,8 @@
     $router -> register('rootUnit', 'RootUnit', 'rootUnit');
     $router -> register('hasPermission', 'User', 'hasPermission');
     $router -> register('getUserInfo', 'User', 'getUserInfo');
+    $router -> register('registerUser', 'User', 'registerUser');
+
+    $router -> register('addUserRole', 'UserRole', 'addUserRole');
+    
 ?>
